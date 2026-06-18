@@ -178,12 +178,6 @@ input[type="search"] {
   color: var(--ink);
 }
 
-.study-link-bottom {
-  width: min(420px, 100%);
-  justify-self: center;
-  margin-top: 4px;
-}
-
 .progress-strip {
   display: grid;
   grid-template-columns: auto minmax(160px, 1fr) auto;
