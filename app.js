@@ -277,12 +277,16 @@ function renderList() {
       button.type = "button";
       button.innerHTML = `
         <span class="list-no">${String(card.no).padStart(2, "0")}</span>
-        <span class="list-word">${card.kanji}</span>
-        <span class="list-reading">
-          <span class="list-kana">${card.kana}</span>
-          <span class="list-romaji">${kanaToRomaji(card.kana)}</span>
+        <span class="list-entry">
+          <span class="list-row list-japanese">
+            <span class="list-word">${card.kanji}</span>
+            <span class="list-kana">${card.kana}</span>
+          </span>
+          <span class="list-row list-translation">
+            <span class="list-meaning">${card.meaning}</span>
+            <span class="list-romaji">${kanaToRomaji(card.kana)}</span>
+          </span>
         </span>
-        <span class="list-meaning">${card.meaning}</span>
       `;
       button.addEventListener("click", () => {
         if (page === "flashcards") {

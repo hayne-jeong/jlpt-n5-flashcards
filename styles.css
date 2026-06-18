@@ -373,10 +373,10 @@ input[type="search"] {
 
 .word-list button {
   display: grid;
-  grid-template-columns: 30px minmax(96px, 0.9fr) minmax(128px, 1fr) minmax(120px, 1.1fr);
+  grid-template-columns: 30px minmax(0, 1fr);
   gap: 12px;
   width: 100%;
-  min-height: 84px;
+  min-height: 88px;
   align-items: center;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -398,9 +398,17 @@ input[type="search"] {
   text-align: center;
 }
 
-.list-reading {
+.list-entry {
   display: grid;
-  gap: 4px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.9fr) minmax(124px, 1fr);
+  gap: 12px;
+  align-items: baseline;
   min-width: 0;
 }
 
@@ -421,7 +429,7 @@ input[type="search"] {
   overflow: hidden;
   color: var(--muted);
   font-size: 0.76rem;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 1;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -491,26 +499,11 @@ input[type="search"] {
   }
 
   .word-list button {
-    grid-template-columns: 28px minmax(82px, 0.8fr) minmax(104px, 1fr);
-    grid-template-areas:
-      "no kanji kana"
-      "no meaning meaning";
+    grid-template-columns: 28px minmax(0, 1fr);
     min-height: 88px;
   }
 
-  .list-no {
-    grid-area: no;
-  }
-
-  .list-word {
-    grid-area: kanji;
-  }
-
-  .list-reading {
-    grid-area: kana;
-  }
-
-  .list-meaning {
-    grid-area: meaning;
+  .list-row {
+    grid-template-columns: minmax(82px, 0.82fr) minmax(104px, 1fr);
   }
 }
