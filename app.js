@@ -15,8 +15,6 @@ const els = {
   studyLink: document.querySelector("#studyLink"),
   dayTitle: document.querySelector("#dayTitle"),
   cardCounter: document.querySelector("#cardCounter"),
-  knownSummary: document.querySelector("#knownSummary"),
-  progressBar: document.querySelector("#progressBar"),
   flashcard: document.querySelector("#flashcard"),
   cardHint: document.querySelector("#cardHint"),
   kanjiText: document.querySelector("#kanjiText"),
@@ -25,6 +23,7 @@ const els = {
   prevBtn: document.querySelector("#prevBtn"),
   revealBtn: document.querySelector("#revealBtn"),
   nextBtn: document.querySelector("#nextBtn"),
+  shuffleToggle: document.querySelector("#shuffleToggle"),
   wordList: document.querySelector("#wordList"),
 };
 
@@ -61,19 +60,16 @@ function dayLabel(day = state.day) {
   return `DAY ${String(day).padStart(2, "0")}`;
 }
 
-function knownCount() {
-  return dayCards().filter((item) => state.known.has(item.id)).length;
-}
-
-function updateKnownSummary() {
-  if (els.knownSummary) {
-    els.knownSummary.textContent = `오늘 외운 단어 ${knownCount()}개`;
-  }
-}
-
 function makeOrder() {
   const cards = dayCards();
   state.order = cards.map((_, index) => index);
+
+  if (els.shuffleToggle?.checked) {
+    for (let i = state.order.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [state.order[i], state.order[j]] = [state.order[j], state.order[i]];
+    }
+  }
 
   state.index = 0;
   state.revealed = false;
@@ -187,7 +183,6 @@ function renderCard() {
 
   els.dayTitle.textContent = dayLabel();
   els.cardCounter.textContent = `${state.index + 1} / ${cards.length}`;
-  els.progressBar.style.width = `${((state.index + 1) / cards.length) * 100}%`;
   els.kanaText.textContent = card.kana;
   els.kanjiText.textContent = card.kanji;
   els.meaningText.textContent = card.meaning;
@@ -202,7 +197,6 @@ function renderList() {
   if (!els.wordList) return;
 
   const cards = dayCards();
-  const active = currentCard();
   els.wordList.innerHTML = "";
 
   cards
@@ -211,21 +205,13 @@ function renderList() {
       const button = document.createElement("button");
       const dayIndex = cards.findIndex((item) => item.id === card.id);
       const orderedIndex = state.order.findIndex((position) => position === dayIndex);
-      const isKnown = state.known.has(card.id);
 
       button.type = "button";
-      button.className = [
-        active?.id === card.id ? "is-active" : "",
-        isKnown ? "is-known" : "",
-      ].filter(Boolean).join(" ");
       button.innerHTML = `
         <span class="list-no">${String(card.no).padStart(2, "0")}</span>
-        <span class="list-copy">
-          <span class="list-kana">${card.kana}</span>
-          <span class="list-word">${card.kanji}</span>
-          <span class="list-meaning">${card.meaning}</span>
-        </span>
-        <span class="known-dot" aria-hidden="true"></span>
+        <span class="list-word">${card.kanji}</span>
+        <span class="list-kana">${card.kana}</span>
+        <span class="list-meaning">${card.meaning}</span>
       `;
       button.addEventListener("click", () => {
         if (page === "flashcards") {
@@ -245,7 +231,6 @@ function render() {
   renderSelectors();
   renderCard();
   renderList();
-  updateKnownSummary();
 }
 
 function bindEvents() {
@@ -254,6 +239,10 @@ function bindEvents() {
   els.nextBtn?.addEventListener("click", () => setIndex(state.index + 1));
   els.revealBtn?.addEventListener("click", () => {
     state.revealed = !state.revealed;
+    render();
+  });
+  els.shuffleToggle?.addEventListener("change", () => {
+    makeOrder();
     render();
   });
   els.flashcard?.addEventListener("click", () => {

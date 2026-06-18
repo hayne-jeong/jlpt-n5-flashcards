@@ -133,12 +133,6 @@ h2 {
   gap: 10px;
 }
 
-.summary-text {
-  margin-top: 12px;
-  color: var(--muted);
-  font-weight: 800;
-}
-
 label {
   color: var(--muted);
   font-size: 0.78rem;
@@ -180,7 +174,7 @@ input[type="search"] {
 
 .progress-strip {
   display: grid;
-  grid-template-columns: auto minmax(160px, 1fr) auto;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 16px;
   margin: 26px 0;
@@ -199,20 +193,15 @@ input[type="search"] {
   font-weight: 900;
 }
 
-.meter {
-  height: 10px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #e8edf1;
-}
-
-.meter span {
-  display: block;
-  width: 0;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent), var(--gold));
-  transition: width 180ms ease;
+.shuffle-control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 32px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .card-stage {
@@ -384,10 +373,10 @@ input[type="search"] {
 
 .word-list button {
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
-  gap: 10px;
+  grid-template-columns: 30px minmax(86px, 0.9fr) minmax(110px, 1fr) minmax(120px, 1.1fr);
+  gap: 12px;
   width: 100%;
-  min-height: 92px;
+  min-height: 72px;
   align-items: center;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -397,29 +386,16 @@ input[type="search"] {
 }
 
 .word-list button:hover,
-.word-list button.is-active {
+.word-list button:focus-visible {
   border-color: rgba(15, 118, 110, 0.28);
   background: var(--wash);
 }
 
-.word-list button.is-known {
-  color: var(--muted);
-}
-
-.word-list button.is-known .list-kana {
-  text-decoration: line-through;
-}
-
 .list-no {
-  color: var(--tomato);
-  font-size: 0.82rem;
-  font-weight: 900;
-}
-
-.list-copy {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
+  color: #9aa3af;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 .list-kana {
@@ -429,8 +405,8 @@ input[type="search"] {
   white-space: nowrap;
   color: var(--ink);
   font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
-  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.22rem);
+  font-weight: 500;
   line-height: 1.12;
 }
 
@@ -441,24 +417,14 @@ input[type="search"] {
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.86rem;
 }
 
 .list-word {
-  color: var(--accent-strong);
+  color: var(--ink);
   font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-  font-weight: 500;
-}
-
-.known-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: #c5cdd7;
-}
-
-.is-known .known-dot {
-  background: var(--accent);
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  font-weight: 600;
 }
 
 @media (max-width: 940px) {
@@ -489,10 +455,6 @@ input[type="search"] {
   }
 
   .progress-strip {
-    grid-template-columns: 1fr;
-  }
-
-  .progress-strip {
     display: grid;
     gap: 10px;
     margin: 18px 0;
@@ -509,5 +471,29 @@ input[type="search"] {
 
   .word-grid {
     grid-template-columns: 1fr;
+  }
+
+  .word-list button {
+    grid-template-columns: 28px minmax(72px, 0.8fr) minmax(88px, 1fr);
+    grid-template-areas:
+      "no kanji kana"
+      "no meaning meaning";
+    min-height: 76px;
+  }
+
+  .list-no {
+    grid-area: no;
+  }
+
+  .list-word {
+    grid-area: kanji;
+  }
+
+  .list-kana {
+    grid-area: kana;
+  }
+
+  .list-meaning {
+    grid-area: meaning;
   }
 }

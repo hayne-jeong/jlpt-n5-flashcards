@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JLPT N5 플래시카드 학습</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=5">
   </head>
   <body data-page="flashcards">
     <main class="study-shell">
@@ -28,10 +28,10 @@
             <span id="dayTitle">DAY 01</span>
             <strong id="cardCounter">1 / 30</strong>
           </div>
-          <div class="meter" aria-hidden="true">
-            <span id="progressBar"></span>
-          </div>
-          <p id="knownSummary">오늘 외운 단어 0개</p>
+          <label class="shuffle-control">
+            <input id="shuffleToggle" type="checkbox">
+            <span>섞어서 보기</span>
+          </label>
         </div>
 
         <section class="card-stage">
@@ -53,6 +53,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=5"></script>
   </body>
 </html>
