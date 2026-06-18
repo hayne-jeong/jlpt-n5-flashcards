@@ -23,7 +23,7 @@ const els = {
   kanaText: document.querySelector("#kanaText"),
   meaningText: document.querySelector("#meaningText"),
   prevBtn: document.querySelector("#prevBtn"),
-  speakBtn: document.querySelector("#speakBtn"),
+  revealBtn: document.querySelector("#revealBtn"),
   nextBtn: document.querySelector("#nextBtn"),
   wordList: document.querySelector("#wordList"),
 };
@@ -193,6 +193,9 @@ function renderCard() {
   els.meaningText.textContent = card.meaning;
   els.flashcard.classList.toggle("is-revealed", state.revealed);
   els.cardHint.textContent = state.revealed ? "눌러서 가리기" : "눌러서 뜻 보기";
+  if (els.revealBtn) {
+    els.revealBtn.textContent = state.revealed ? "정답 가리기" : "정답 보기";
+  }
 }
 
 function renderList() {
@@ -249,10 +252,12 @@ function bindEvents() {
   els.daySelect?.addEventListener("change", (event) => setDay(Number(event.target.value)));
   els.prevBtn?.addEventListener("click", () => setIndex(state.index - 1));
   els.nextBtn?.addEventListener("click", () => setIndex(state.index + 1));
-  els.speakBtn?.addEventListener("click", () => speak());
-  els.flashcard?.addEventListener("click", () => {
+  els.revealBtn?.addEventListener("click", () => {
     state.revealed = !state.revealed;
     render();
+  });
+  els.flashcard?.addEventListener("click", () => {
+    speak();
   });
 
   document.addEventListener("keydown", (event) => {
