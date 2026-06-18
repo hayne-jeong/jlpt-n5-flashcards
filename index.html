@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JLPT N5 오늘의 30단어</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="home">
+    <main class="home-shell">
+      <section class="home-panel" aria-label="오늘의 단어 목록">
+        <header class="home-header">
+          <div>
+            <p class="eyebrow">JLPT N5 Vocabulary</p>
+            <h1>오늘의 30단어</h1>
+            <p id="knownSummary" class="summary-text">오늘 외운 단어 0개</p>
+          </div>
+          <div class="home-controls">
+            <div class="day-picker">
+              <label for="daySelect">학습일</label>
+              <select id="daySelect" aria-label="학습일 선택"></select>
+            </div>
+          </div>
+        </header>
+
+        <ol class="word-list word-grid" id="wordList"></ol>
+        <a id="studyLink" class="study-link study-link-bottom" href="flashcards.html?day=1">플래시카드로 단어 학습하기</a>
+      </section>
+    </main>
+
+    <script src="app.js?v=3"></script>
+  </body>
+</html>

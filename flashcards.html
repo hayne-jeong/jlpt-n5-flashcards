@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JLPT N5 플래시카드 학습</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="flashcards">
+    <main class="study-shell">
+      <section class="study-panel" aria-label="플래시카드 학습">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">JLPT N5 Flashcards</p>
+            <h1>플래시카드 학습</h1>
+          </div>
+          <div class="study-nav">
+            <a class="back-link" href="index.html">오늘의 30단어</a>
+            <div class="day-picker">
+              <label for="daySelect">학습일</label>
+              <select id="daySelect" aria-label="학습일 선택"></select>
+            </div>
+          </div>
+        </header>
+
+        <div class="progress-strip">
+          <div>
+            <span id="dayTitle">DAY 01</span>
+            <strong id="cardCounter">1 / 30</strong>
+          </div>
+          <div class="meter" aria-hidden="true">
+            <span id="progressBar"></span>
+          </div>
+          <p id="knownSummary">오늘 외운 단어 0개</p>
+        </div>
+
+        <section class="card-stage">
+          <button id="flashcard" class="flashcard" type="button" aria-label="카드 뒤집기">
+            <span class="card-label" id="cardHint">눌러서 뜻 보기</span>
+            <span class="kana" id="kanaText">読み込み</span>
+            <span class="kanji" id="kanjiText">데이터를 불러오는 중</span>
+            <span class="meaning" id="meaningText">잠시만 기다려 주세요</span>
+          </button>
+        </section>
+
+        <div class="primary-actions" aria-label="학습 조작">
+          <button id="speakBtn" type="button" class="accent">발음 듣기</button>
+          <div class="nav-actions">
+            <button id="prevBtn" type="button" class="ghost">이전</button>
+            <button id="nextBtn" type="button" class="ghost">다음</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js?v=3"></script>
+  </body>
+</html>

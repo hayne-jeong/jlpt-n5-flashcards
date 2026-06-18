@@ -1,0 +1,298 @@
+const page = document.body.dataset.page;
+
+const state = {
+  allCards: [],
+  day: 1,
+  order: [],
+  index: 0,
+  revealed: false,
+  known: new Set(JSON.parse(localStorage.getItem("jlpt-n5-known") || "[]")),
+  voices: [],
+};
+
+const els = {
+  daySelect: document.querySelector("#daySelect"),
+  studyLink: document.querySelector("#studyLink"),
+  dayTitle: document.querySelector("#dayTitle"),
+  cardCounter: document.querySelector("#cardCounter"),
+  knownSummary: document.querySelector("#knownSummary"),
+  progressBar: document.querySelector("#progressBar"),
+  flashcard: document.querySelector("#flashcard"),
+  cardHint: document.querySelector("#cardHint"),
+  kanjiText: document.querySelector("#kanjiText"),
+  kanaText: document.querySelector("#kanaText"),
+  meaningText: document.querySelector("#meaningText"),
+  prevBtn: document.querySelector("#prevBtn"),
+  speakBtn: document.querySelector("#speakBtn"),
+  nextBtn: document.querySelector("#nextBtn"),
+  wordList: document.querySelector("#wordList"),
+};
+
+function totalDays() {
+  return Math.max(...state.allCards.map((card) => card.day), 1);
+}
+
+function clampDay(day) {
+  return Math.min(totalDays(), Math.max(1, Number(day) || 1));
+}
+
+function dayCards(day = state.day) {
+  return state.allCards.filter((card) => card.day === day);
+}
+
+function visibleCards() {
+  const cards = dayCards();
+  return state.order.map((position) => cards[position]).filter(Boolean);
+}
+
+function currentCard() {
+  return visibleCards()[state.index];
+}
+
+function persistKnown() {
+  localStorage.setItem("jlpt-n5-known", JSON.stringify([...state.known]));
+}
+
+function persistDay() {
+  localStorage.setItem("jlpt-n5-day", String(state.day));
+}
+
+function dayLabel(day = state.day) {
+  return `DAY ${String(day).padStart(2, "0")}`;
+}
+
+function knownCount() {
+  return dayCards().filter((item) => state.known.has(item.id)).length;
+}
+
+function updateKnownSummary() {
+  if (els.knownSummary) {
+    els.knownSummary.textContent = `오늘 외운 단어 ${knownCount()}개`;
+  }
+}
+
+function makeOrder() {
+  const cards = dayCards();
+  state.order = cards.map((_, index) => index);
+
+  state.index = 0;
+  state.revealed = false;
+}
+
+function setDay(day) {
+  state.day = clampDay(day);
+  persistDay();
+  makeOrder();
+
+  if (page === "flashcards") {
+    const nextUrl = new URL(window.location.href);
+    nextUrl.searchParams.set("day", String(state.day));
+    window.history.replaceState({}, "", nextUrl);
+  }
+
+  render();
+}
+
+function setIndex(nextIndex) {
+  const cards = visibleCards();
+  if (!cards.length) return;
+
+  state.index = (nextIndex + cards.length) % cards.length;
+  state.revealed = false;
+  render();
+}
+
+function reveal() {
+  state.revealed = true;
+  render();
+}
+
+function toggleKnown(card = currentCard()) {
+  if (!card) return;
+
+  if (state.known.has(card.id)) {
+    state.known.delete(card.id);
+  } else {
+    state.known.add(card.id);
+  }
+
+  persistKnown();
+  render();
+}
+
+function speak(card = currentCard()) {
+  if (!card || !("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(card.kana);
+  utterance.lang = "ja-JP";
+  utterance.rate = 0.92;
+  utterance.pitch = 1;
+
+  const japaneseVoice = selectJapaneseVoice();
+  if (japaneseVoice) {
+    utterance.voice = japaneseVoice;
+  }
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function selectJapaneseVoice() {
+  const voices = state.voices.filter((voice) => voice.lang.toLowerCase().startsWith("ja"));
+  if (!voices.length) return null;
+
+  const scoredVoices = voices.map((voice) => {
+    const name = voice.name.toLowerCase();
+    let score = 0;
+    if (name.includes("siri")) score += 80;
+    if (name.includes("kyoko") || name.includes("otoya")) score += 70;
+    if (name.includes("google")) score += 55;
+    if (name.includes("premium") || name.includes("enhanced")) score += 45;
+    if (name.includes("compact")) score -= 50;
+    if (voice.localService) score += 5;
+    return { voice, score };
+  });
+
+  scoredVoices.sort((a, b) => b.score - a.score || a.voice.name.localeCompare(b.voice.name));
+  return scoredVoices[0].voice;
+}
+
+function renderSelectors() {
+  if (els.daySelect) {
+    els.daySelect.innerHTML = "";
+  }
+
+  for (let day = 1; day <= totalDays(); day += 1) {
+    if (els.daySelect) {
+      const option = document.createElement("option");
+      option.value = String(day);
+      option.textContent = dayLabel(day);
+      els.daySelect.append(option);
+    }
+  }
+
+  if (els.daySelect) {
+    els.daySelect.value = String(state.day);
+  }
+
+  if (els.studyLink) {
+    els.studyLink.href = `flashcards.html?day=${state.day}`;
+  }
+}
+
+function renderCard() {
+  const cards = visibleCards();
+  const card = currentCard();
+  if (!card || !els.flashcard) return;
+
+  els.dayTitle.textContent = dayLabel();
+  els.cardCounter.textContent = `${state.index + 1} / ${cards.length}`;
+  els.progressBar.style.width = `${((state.index + 1) / cards.length) * 100}%`;
+  els.kanaText.textContent = card.kana;
+  els.kanjiText.textContent = card.kanji;
+  els.meaningText.textContent = card.meaning;
+  els.flashcard.classList.toggle("is-revealed", state.revealed);
+  els.cardHint.textContent = state.revealed ? "눌러서 가리기" : "눌러서 뜻 보기";
+}
+
+function renderList() {
+  if (!els.wordList) return;
+
+  const cards = dayCards();
+  const active = currentCard();
+  els.wordList.innerHTML = "";
+
+  cards
+    .forEach((card) => {
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      const dayIndex = cards.findIndex((item) => item.id === card.id);
+      const orderedIndex = state.order.findIndex((position) => position === dayIndex);
+      const isKnown = state.known.has(card.id);
+
+      button.type = "button";
+      button.className = [
+        active?.id === card.id ? "is-active" : "",
+        isKnown ? "is-known" : "",
+      ].filter(Boolean).join(" ");
+      button.innerHTML = `
+        <span class="list-no">${String(card.no).padStart(2, "0")}</span>
+        <span class="list-copy">
+          <span class="list-kana">${card.kana}</span>
+          <span class="list-word">${card.kanji}</span>
+          <span class="list-meaning">${card.meaning}</span>
+        </span>
+        <span class="known-dot" aria-hidden="true"></span>
+      `;
+      button.addEventListener("click", () => {
+        if (page === "flashcards") {
+          state.index = Math.max(0, orderedIndex);
+          state.revealed = true;
+          render();
+        } else {
+          speak(card);
+        }
+      });
+      li.append(button);
+      els.wordList.append(li);
+    });
+}
+
+function render() {
+  renderSelectors();
+  renderCard();
+  renderList();
+  updateKnownSummary();
+}
+
+function bindEvents() {
+  els.daySelect?.addEventListener("change", (event) => setDay(Number(event.target.value)));
+  els.prevBtn?.addEventListener("click", () => setIndex(state.index - 1));
+  els.nextBtn?.addEventListener("click", () => setIndex(state.index + 1));
+  els.speakBtn?.addEventListener("click", () => speak());
+  els.flashcard?.addEventListener("click", () => {
+    state.revealed = !state.revealed;
+    render();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (page !== "flashcards" || event.target.matches("input, select")) return;
+    if (event.key === "ArrowLeft") setIndex(state.index - 1);
+    if (event.key === "ArrowRight") setIndex(state.index + 1);
+    if (event.key === " ") {
+      event.preventDefault();
+      reveal();
+    }
+    if (event.key.toLowerCase() === "p") speak();
+    if (event.key.toLowerCase() === "k") toggleKnown();
+  });
+}
+
+async function init() {
+  const response = await fetch("data/vocab.json");
+  state.allCards = await response.json();
+  const params = new URLSearchParams(window.location.search);
+  state.day = clampDay(Number(params.get("day")) || Number(localStorage.getItem("jlpt-n5-day")) || 1);
+  state.voices = window.speechSynthesis?.getVoices?.() || [];
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      state.voices = window.speechSynthesis.getVoices();
+    };
+  }
+
+  bindEvents();
+  makeOrder();
+  render();
+}
+
+init().catch((error) => {
+  if (els.kanaText && els.kanjiText && els.meaningText && els.flashcard) {
+    els.kanaText.textContent = "오류";
+    els.kanjiText.textContent = "데이터를 불러오지 못했습니다";
+    els.meaningText.textContent = error.message;
+    els.flashcard.classList.add("is-revealed");
+  } else {
+    document.body.textContent = `데이터를 불러오지 못했습니다: ${error.message}`;
+  }
+});
