@@ -433,7 +433,7 @@ input[type="search"] {
   white-space: nowrap;
   color: var(--ink);
   font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-  font-size: clamp(1.24rem, 1.8vw, 1.56rem);
+  font-size: 24px;
   font-weight: 500;
   line-height: 1.12;
 }
@@ -462,7 +462,7 @@ input[type="search"] {
 .list-word {
   color: var(--ink);
   font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-  font-size: clamp(1.3rem, 2vw, 1.74rem);
+  font-size: 24px;
   font-weight: 600;
 }
 
