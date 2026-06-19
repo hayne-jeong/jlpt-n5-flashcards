@@ -148,6 +148,15 @@ input[type="search"] {
   padding: 0 12px;
 }
 
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 9L12 15L18 9' stroke='%23172033' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: right 18px center;
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  padding-right: 50px;
+}
+
 .study-link,
 .back-link {
   display: inline-flex;
@@ -355,17 +364,21 @@ input[type="search"] {
 
 .list-controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .detail-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   min-height: 32px;
   color: var(--muted);
   font-size: 0.82rem;
   font-weight: 700;
+}
+
+.detail-toggle input {
+  margin: 0;
 }
 
 .word-list {
@@ -387,7 +400,7 @@ input[type="search"] {
 
 .word-list button {
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr);
+  grid-template-columns: 24px minmax(0, 1fr);
   gap: 12px;
   width: 100%;
   min-height: 88px;
@@ -395,7 +408,7 @@ input[type="search"] {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.74);
-  padding: 12px 12px;
+  padding: 12px 12px 12px 8px;
   text-align: left;
 }
 
@@ -414,7 +427,7 @@ input[type="search"] {
 
 .list-entry {
   display: grid;
-  gap: 8px;
+  gap: 2px;
   min-width: 0;
 }
 
@@ -517,7 +530,7 @@ input[type="search"] {
   }
 
   .word-list button {
-    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-columns: 22px minmax(0, 1fr);
     min-height: 88px;
   }
 
