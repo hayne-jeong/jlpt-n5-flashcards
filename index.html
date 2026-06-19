@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>JLPT N5 오늘의 30단어</title>
-    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="styles.css?v=8">
   </head>
   <body data-page="home">
     <main class="home-shell">
@@ -23,10 +23,17 @@
           </div>
         </header>
 
+        <div class="list-controls" aria-label="단어 목록 보기 설정">
+          <label class="detail-toggle">
+            <input id="hideDetailsToggle" type="checkbox">
+            <span>뜻이랑 발음 표기 숨기기</span>
+          </label>
+        </div>
+
         <ol class="word-list word-grid" id="wordList"></ol>
       </section>
     </main>
 
-    <script src="app.js?v=7"></script>
+    <script src="app.js?v=8"></script>
   </body>
 </html>

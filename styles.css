@@ -90,8 +90,7 @@ button {
 }
 
 .home-header {
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--line);
+  padding-bottom: 0;
 }
 
 .eyebrow {
@@ -354,6 +353,21 @@ input[type="search"] {
   font-weight: 900;
 }
 
+.list-controls {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.detail-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
 .word-list {
   display: grid;
   gap: 8px;
@@ -419,7 +433,7 @@ input[type="search"] {
   white-space: nowrap;
   color: var(--ink);
   font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-  font-size: clamp(1.14rem, 1.6vw, 1.42rem);
+  font-size: clamp(1.24rem, 1.8vw, 1.56rem);
   font-weight: 500;
   line-height: 1.12;
 }
@@ -448,8 +462,12 @@ input[type="search"] {
 .list-word {
   color: var(--ink);
   font-family: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", sans-serif;
-  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  font-size: clamp(1.3rem, 2vw, 1.74rem);
   font-weight: 600;
+}
+
+.word-list.is-detail-hidden .list-translation {
+  display: none;
 }
 
 @media (max-width: 940px) {

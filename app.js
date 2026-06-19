@@ -6,6 +6,7 @@ const state = {
   order: [],
   index: 0,
   revealed: false,
+  hideDetails: localStorage.getItem("jlpt-n5-hide-details") === "true",
   known: new Set(JSON.parse(localStorage.getItem("jlpt-n5-known") || "[]")),
   voices: [],
 };
@@ -24,6 +25,7 @@ const els = {
   revealBtn: document.querySelector("#revealBtn"),
   nextBtn: document.querySelector("#nextBtn"),
   shuffleToggle: document.querySelector("#shuffleToggle"),
+  hideDetailsToggle: document.querySelector("#hideDetailsToggle"),
   wordList: document.querySelector("#wordList"),
 };
 
@@ -54,6 +56,10 @@ function persistKnown() {
 
 function persistDay() {
   localStorage.setItem("jlpt-n5-day", String(state.day));
+}
+
+function persistHideDetails() {
+  localStorage.setItem("jlpt-n5-hide-details", String(state.hideDetails));
 }
 
 function dayLabel(day = state.day) {
@@ -242,6 +248,10 @@ function renderSelectors() {
   if (els.studyLink) {
     els.studyLink.href = `flashcards.html?day=${state.day}`;
   }
+
+  if (els.hideDetailsToggle) {
+    els.hideDetailsToggle.checked = state.hideDetails;
+  }
 }
 
 function renderCard() {
@@ -266,6 +276,7 @@ function renderList() {
 
   const cards = dayCards();
   els.wordList.innerHTML = "";
+  els.wordList.classList.toggle("is-detail-hidden", state.hideDetails);
 
   cards
     .forEach((card) => {
@@ -319,6 +330,11 @@ function bindEvents() {
   els.shuffleToggle?.addEventListener("change", () => {
     makeOrder();
     render();
+  });
+  els.hideDetailsToggle?.addEventListener("change", (event) => {
+    state.hideDetails = event.target.checked;
+    persistHideDetails();
+    renderList();
   });
   els.flashcard?.addEventListener("click", () => {
     speak();
